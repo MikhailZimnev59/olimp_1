@@ -1,0 +1,1 @@
+{'python': 'programming languages', 'programming languages': 'it', 'it': '_root', 'php': 'programming languages', 'postgresql': 'rdbms', 'rdbms': 'databases', 'databases': 'it', 'engineering': '_root'}
