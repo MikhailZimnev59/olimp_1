@@ -15,17 +15,26 @@ class T_Debug(Base):
     __tablename__ = 't_debug'
     id = Column(Integer, primary_key=True, index=True)
     stroka = Column(String(100), nullable=False)
-
 class T_Projname(Base):
     __tablename__ = 't_projname'
     id = Column(Integer, primary_key=True, index=True)
     projname = Column(String(100), nullable=False)
 
+class T_Candidate(Base):
+    __tablename__ = 't_candidate'
+    id = Column(Integer, primary_key=True, index=True)
+    txt_cand = Column(String(100), nullable=False)
 
-DEBUG = 'SQL' #'TXT'
-EBZ = 'TXT'
+class T_Ebz(Base):
+    __tablename__ = 't_ebz'
+    id = Column(Integer, primary_key=True)
+    son = Column(String(100), nullable=False)
+    father = Column(String(100), nullable = False)
+
+DEBUG = 'TXT'
+EBZ = 'SQL'
 PROJ = 'TXT'
-CANDIDATE = 'TXT'
+CANDIDATE = 'SQL'
 PROJNAME = 'SQL'
 def get_ebz():
     if EBZ == 'TXT':
@@ -45,14 +54,22 @@ def get_ebz():
             with open('ebz.txt', 'w', encoding = 'utf-8') as f:
                 f.write(str(dct))
     elif EBZ == 'SQL':
-        pass
+        result = session.query(T_Ebz)
+        dct = {}
+        for i in result:
+            dct[i.son] = i.father
     return dct
 def post_ebz(dct):
     if EBZ == 'TXT':
         with open('ebz.txt', 'w', encoding = 'utf-8') as f:
             f.write(str(dct))
     elif EBZ == 'SQL':
-        pass
+        session = Session(bind=engine)
+        new_son, new_father = list(dct.items())[-1]
+        new_id = len(list(dct.items())) + 1
+        new_pair = T_Ebz(id = new_id, son = new_son, father = new_father)
+        session.add(new_pair)
+        session.commit()
 
 def get_proj():
     if PROJ == 'TXT':
@@ -88,7 +105,8 @@ def get_candidate():
             with open('candidate.txt', 'w', encoding='utf-8') as f:
                 f.write(txt_cand)
     elif CANDIDATE == 'SQL':
-        pass
+        result = session.query(T_Candidate).one()
+        txt_cand = result.txt_cand
     return txt_cand
 
 def post_candidate(txt_cand):
@@ -96,7 +114,11 @@ def post_candidate(txt_cand):
         with open('candidate.txt', 'w', encoding = 'utf-8') as f:
             f.write(txt_cand)
     elif CANDIDATE == 'SQL':
-        pass
+        session = Session(bind=engine)
+        i = session.query(T_Candidate).get(1)
+        i.txt_cand = txt_cand
+        session.add(i)
+        session.commit()
 
 def get_projname():
     if PROJNAME == 'TXT':
