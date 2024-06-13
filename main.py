@@ -54,7 +54,7 @@ class ProjName(BaseModel):
     proj_name: str = Field(title='proj_name')
 
 
-# -----------inittial data------------------------
+# -----------initial data------------------------
 dct = data.get_ebz()
 dct_proj = data.get_proj()
 txt_cand = data.get_candidate()
